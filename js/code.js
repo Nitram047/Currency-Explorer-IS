@@ -29,13 +29,13 @@ async function convertirMoneda() {
 
   const valor = Number(cantidad.value);
 
-  // TODO · MISIÓN 07: sustituir esta validación mínima por una validación completa.
+  // Terminado TODO · MISIÓN 07: sustituir esta validación mínima por una validación completa.
   if (!Number.isFinite(valor) || valor <= 0) {
     mostrarError("Escribe una cantidad mayor que cero.");
     return;
   }
 
-  // TODO · MISIÓN 04: reemplazar EUR y USD por los valores elegidos en los <select>.
+  // Terminado TODO · MISIÓN 04: reemplazar EUR y USD por los valores elegidos en los <select>.
   const monedaOrigen = origen.value;
   const monedaDestino = destino.value;
 
@@ -49,14 +49,17 @@ async function convertirMoneda() {
 
   const url = `https://api.frankfurter.dev/v2/rate/${monedaOrigen}/${monedaDestino}`;
 
+  // Terminado · MISIÓN 08: activar un estado visual de carga antes de consultar.
+  activarCarga(true);
+
   try {
-    // TODO · MISIÓN 08: activar un estado visual de carga antes de consultar.
+
     const respuesta = await fetch(url);
 
     // TODO · MISIÓN 09: comprobar response.ok y lanzar un error si corresponde.
     const datos = await respuesta.json();
 
-    //Mision 05
+    // Terminado Mision 05
     const conversion=valor*datos.rate;
     
     mostrarResultado(
@@ -81,7 +84,7 @@ async function convertirMoneda() {
 
 
 function intercambiarMonedas() {
-  // TODO · MISIÓN 06:
+  // Terminado TODO · MISIÓN 06:
   const temporal=origen.value;
   origen.value=destino.value;
   destino.value=temporal.value;
@@ -108,6 +111,16 @@ function formatear(numero) {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
+}
+
+// Terminado Misión 08: activa o desactiva los controles durante la consulta
+function activarCarga(cargando) {
+  btnConvertir.disabled = cargando;
+  btnIntercambiar.disabled = cargando;
+  origen.disabled = cargando;
+  destino.disabled = cargando;
+  btnConvertir.textContent = cargando ? "Consultando..." : "Convertir";
+  resultado.setAttribute("aria-busy", String(cargando));
 }
 
 // PISTA PARA EL RETO:
