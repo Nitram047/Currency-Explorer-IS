@@ -21,6 +21,11 @@ btnIntercambiar.addEventListener("click", intercambiarMonedas);
 async function convertirMoneda() {
   // Misiones guiadas 1-3: ya existe un flujo mínimo funcional EUR -> USD.
   // A partir de la Misión 4 debes convertirlo en una solución dinámica.
+  const textoCantidad=cantidad.value.trim();
+  if(textoCantidad===""){
+    mostrarError("EScribe una cantidad valida");
+    return;
+  }
 
   const valor = Number(cantidad.value);
 
@@ -34,6 +39,14 @@ async function convertirMoneda() {
   const monedaOrigen = origen.value;
   const monedaDestino = destino.value;
 
+  if(monedaDestino === monedaDestino){
+    mostrarResultado(
+      ${formatear(valor)} ${monedaOrigen} = ${formatear(valor)} ${monedaDestino},
+      "Ambas monedas son iguales; no hay conversión que realizar."
+    );
+    return;
+  }
+
   const url = `https://api.frankfurter.dev/v2/rate/${monedaOrigen}/${monedaDestino}`;
 
   try {
@@ -43,8 +56,17 @@ async function convertirMoneda() {
     // TODO · MISIÓN 09: comprobar response.ok y lanzar un error si corresponde.
     const datos = await respuesta.json();
 
-    const conversion = valor * datos.rate;
-
+    //Mision 05
+    const conversion=valor*datos.rate;
+    
+    mostrarResultado(
+      `${formatear(valor)} ${monedaOrigen}=${formatear(conversion)}
+      ${monedaDestino}`,
+      `1 ${monedaOrigen} = ${datos.rate.toFixed(4)} ${monedaDestino} · 
+      Fecha: ${datos.date}`
+    );
+    
+      //Esto lo podemos remover
     resultado.classList.remove("error");
     resultadoTexto.textContent = `${valor.toFixed(2)} ${monedaOrigen} = ${conversion.toFixed(2)} ${monedaDestino}`;
     detalleTasa.textContent = `1 ${monedaOrigen} = ${datos.rate} ${monedaDestino} · ${datos.date}`;
@@ -55,6 +77,8 @@ async function convertirMoneda() {
     console.error(error);
   }
 }
+
+
 
 function intercambiarMonedas() {
   // TODO · MISIÓN 06:
@@ -70,6 +94,20 @@ function mostrarError(mensaje) {
   resultado.classList.add("error");
   resultadoTexto.textContent = mensaje;
   detalleTasa.textContent = "Revisa los datos e inténtalo nuevamente.";
+}
+
+// Muestra un resultado correcto
+function mostrarResultado(textoPrincipal, detalle) {
+  resultado.classList.remove("error");
+  resultadoTexto.textContent = textoPrincipal;
+  detalleTasa.textContent = detalle;
+}
+//Nos formatea el numero con separadores y dos decimales
+function formatear(numero) {
+  return numero.toLocaleString("es-MX", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 }
 
 // PISTA PARA EL RETO:
