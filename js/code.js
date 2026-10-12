@@ -19,27 +19,22 @@ btnIntercambiar.addEventListener("click", intercambiarMonedas);
 
 // 3. FUNCIÓN PRINCIPAL
 async function convertirMoneda() {
-  // Misiones guiadas 1-3: ya existe un flujo mínimo funcional EUR -> USD.
-  // A partir de la Misión 4 debes convertirlo en una solución dinámica.
-  const textoCantidad=cantidad.value.trim();
-  if(textoCantidad===""){
-    mostrarError("EScribe una cantidad valida");
+  const textoCantidad = cantidad.value.trim();
+  if (textoCantidad === "") {
+    mostrarError("Escribe una cantidad válida.");
     return;
   }
 
-  const valor = Number(cantidad.value);
-
-  // Terminado TODO · MISIÓN 07: sustituir esta validación mínima por una validación completa.
+  const valor = Number(textoCantidad);
   if (!Number.isFinite(valor) || valor <= 0) {
     mostrarError("Escribe una cantidad mayor que cero.");
     return;
   }
 
-  // Terminado TODO · MISIÓN 04: reemplazar EUR y USD por los valores elegidos en los <select>.
   const monedaOrigen = origen.value;
   const monedaDestino = destino.value;
 
-  if(monedaDestino === monedaDestino){
+  if (monedaOrigen === monedaDestino) {
     mostrarResultado(
       `${formatear(valor)} ${monedaOrigen} = ${formatear(valor)} ${monedaDestino}`,
       "Ambas monedas son iguales; no hay conversión que realizar."
@@ -49,47 +44,33 @@ async function convertirMoneda() {
 
   const url = `https://api.frankfurter.dev/v2/rate/${monedaOrigen}/${monedaDestino}`;
 
-  // Terminado · MISIÓN 08: activar un estado visual de carga antes de consultar.
   activarCarga(true);
 
   try {
-
     const respuesta = await fetch(url);
 
     // TODO · MISIÓN 09: comprobar response.ok y lanzar un error si corresponde.
     const datos = await respuesta.json();
 
-    // Terminado Mision 05
-    const conversion=valor*datos.rate;
-    
+    const conversion = valor * datos.rate;
+
     mostrarResultado(
-      `${formatear(valor)} ${monedaOrigen}=${formatear(conversion)}
-      ${monedaDestino}`,
-      `1 ${monedaOrigen} = ${datos.rate.toFixed(4)} ${monedaDestino} · 
-      Fecha: ${datos.date}`
+      `${formatear(valor)} ${monedaOrigen} = ${formatear(conversion)} ${monedaDestino}`,
+      `1 ${monedaOrigen} = ${datos.rate.toFixed(4)} ${monedaDestino} · Fecha: ${datos.date}`
     );
-
-      //Esto lo podemos remover
-    resultado.classList.remove("error");
-    resultadoTexto.textContent = `${valor.toFixed(2)} ${monedaOrigen} = ${conversion.toFixed(2)} ${monedaDestino}`;
-    detalleTasa.textContent = `1 ${monedaOrigen} = ${datos.rate} ${monedaDestino} · ${datos.date}`;
-
   } catch (error) {
-    // TODO · MISIÓN 09: mejora el mensaje y analiza qué errores pueden llegar aquí.
     mostrarError("No fue posible completar la consulta.");
     console.error(error);
+  } finally {
+    activarCarga(false);
   }
 }
 
-
-
 function intercambiarMonedas() {
-  // Terminado TODO · MISIÓN 06:
-  const temporal=origen.value;
-  origen.value=destino.value;
-  destino.value=temporal.value;
+  const temporal = origen.value;
+  origen.value = destino.value;
+  destino.value = temporal;
   convertirMoneda();
-  mostrarError("Misión 06 pendiente: implementa el intercambio de monedas.");
 }
 
 // 4. UTILIDADES DE INTERFAZ
@@ -99,13 +80,12 @@ function mostrarError(mensaje) {
   detalleTasa.textContent = "Revisa los datos e inténtalo nuevamente.";
 }
 
-// Muestra un resultado correcto
 function mostrarResultado(textoPrincipal, detalle) {
   resultado.classList.remove("error");
   resultadoTexto.textContent = textoPrincipal;
   detalleTasa.textContent = detalle;
 }
-//Nos formatea el numero con separadores y dos decimales
+
 function formatear(numero) {
   return numero.toLocaleString("es-MX", {
     minimumFractionDigits: 2,
@@ -113,7 +93,6 @@ function formatear(numero) {
   });
 }
 
-// Terminado Misión 08: activa o desactiva los controles durante la consulta
 function activarCarga(cargando) {
   btnConvertir.disabled = cargando;
   btnIntercambiar.disabled = cargando;
