@@ -19,7 +19,7 @@ Construir, en parejas, una aplicación web que convierta importes entre divisas 
 | 07     | Martin | Owen   | 3200848 |
 | 08     | Martin | Owen   | 5d82036 |
 | 09     | Owen   | Martin | 7667862 |
-| 10     | Owen   | Martin | Commit de este README |
+| 10     | Ambos  | Ambos  | Commit de este README |
 
 ## Objetivo
 
