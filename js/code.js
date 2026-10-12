@@ -41,7 +41,7 @@ async function convertirMoneda() {
 
   if(monedaDestino === monedaDestino){
     mostrarResultado(
-      ${formatear(valor)} ${monedaOrigen} = ${formatear(valor)} ${monedaDestino},
+      `${formatear(valor)} ${monedaOrigen} = ${formatear(valor)} ${monedaDestino}`,
       "Ambas monedas son iguales; no hay conversión que realizar."
     );
     return;
@@ -65,7 +65,7 @@ async function convertirMoneda() {
       `1 ${monedaOrigen} = ${datos.rate.toFixed(4)} ${monedaDestino} · 
       Fecha: ${datos.date}`
     );
-    
+
       //Esto lo podemos remover
     resultado.classList.remove("error");
     resultadoTexto.textContent = `${valor.toFixed(2)} ${monedaOrigen} = ${conversion.toFixed(2)} ${monedaDestino}`;
