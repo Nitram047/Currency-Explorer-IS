@@ -49,7 +49,10 @@ async function convertirMoneda() {
   try {
     const respuesta = await fetch(url);
 
-    // TODO · MISIÓN 09: comprobar response.ok y lanzar un error si corresponde.
+    if (!respuesta.ok) {
+      throw new Error(`HTTP ${respuesta.status}`);
+    }
+
     const datos = await respuesta.json();
 
     const conversion = valor * datos.rate;
@@ -59,7 +62,11 @@ async function convertirMoneda() {
       `1 ${monedaOrigen} = ${datos.rate.toFixed(4)} ${monedaDestino} · Fecha: ${datos.date}`
     );
   } catch (error) {
-    mostrarError("No fue posible completar la consulta.");
+    if (error instanceof TypeError) {
+      mostrarError("No hay conexión con el servicio de divisas.");
+    } else {
+      mostrarError("No fue posible completar la consulta.");
+    }
     console.error(error);
   } finally {
     activarCarga(false);
